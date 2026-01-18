@@ -46,6 +46,7 @@ com\farah\couture\security\jwt\AuthEntryPointJwt.class
 com\farah\couture\repositories\ImageRepository.class
 com\farah\couture\services\impl\OrderServiceImpl$1.class
 com\farah\couture\FarahCoutureApplication.class
+com\farah\couture\web\ApiRootController.class
 com\farah\couture\repositories\ProductRepository.class
 com\farah\couture\controllers\FavoriteController.class
 com\farah\couture\services\CartService.class
