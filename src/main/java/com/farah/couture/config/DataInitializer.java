@@ -17,6 +17,9 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         // Seed Categories if empty
@@ -33,7 +36,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setFirstName("Admin");
             admin.setLastName("Farah");
             admin.setEmail("admin@farah.com");
-            admin.setPassword("admin123"); // In real app, encrypt this!
+            admin.setPassword(passwordEncoder.encode("admin123")); // In real app, encrypt this!
             admin.setRole("ADMIN");
             userRepository.save(admin);
             System.out.println("Admin user seeded.");
