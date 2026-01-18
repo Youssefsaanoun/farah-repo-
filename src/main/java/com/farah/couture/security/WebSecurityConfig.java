@@ -57,10 +57,16 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // SPA static resources (must be before API endpoints)
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", 
+                                "/*.js", "/*.css", "/*.png", "/*.jpg", "/*.jpeg", "/*.svg", "/*.ico", "/*.woff", "/*.woff2", "/*.ttf")
+                        .permitAll()
+                        // API public endpoints
                         .requestMatchers("/api/users/login", "/api/users/register", "/api/users/forgot-password",
                                 "/api/users/reset-password", "/api/products/**", "/api/categories/**", "/api/images/**",
                                 "/images/**")
-                        .permitAll() // Public endpoints
+                        .permitAll()
+                        // All other requests require authentication
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
