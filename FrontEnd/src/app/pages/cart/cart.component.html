@@ -1,0 +1,116 @@
+<div class="cart-page">
+    <h1>Panier</h1>
+
+    <div class="cart-container" *ngIf="(cartItems$ | async) as items">
+        <div class="empty-cart" *ngIf="items.length === 0">
+            <p>Votre panier est vide.</p>
+            <a routerLink="/products" class="btn-link">Continuer vos achats</a>
+        </div>
+
+        <div class="cart-items" *ngIf="items.length > 0">
+            <div *ngFor="let item of items" class="cart-item">
+                <div class="item-image">
+                    <img [src]="(item.product.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                        [alt]="item.product.name">
+                </div>
+                <div class="item-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>{{ item.price | currency:'TND':'symbol':'1.2-2' }}</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" (click)="decreaseQty(item)" [disabled]="item.quantity <= 1">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="qty-input" [ngModel]="item.quantity" readonly>
+                        <button class="qty-btn" (click)="increaseQty(item)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <button (click)="cartService.removeFromCart(item.product.id)" class="remove-btn"
+                    title="Retirer l'article">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="cart-summary" *ngIf="items.length > 0">
+            <div class="total">
+                <span>Total</span>
+                <span>{{ cartService.getTotalPrice() | currency:'TND':'symbol':'1.2-2' }}</span>
+            </div>
+
+            <div *ngIf="!showCheckoutForm">
+                <button class="btn-primary checkout-btn" (click)="checkout()">Passer la commande</button>
+            </div>
+
+            <div *ngIf="showCheckoutForm" class="checkout-form-container fade-in">
+                <h3>Détails de livraison</h3>
+                <form #checkoutForm="ngForm" (ngSubmit)="submitOrder()">
+                    <div class="form-grid">
+                        <div class="form-group span-full">
+                            <label>Numéro de téléphone <span class="text-danger">*</span></label>
+                            <div class="phone-input-wrapper"
+                                [class.error]="phone.invalid && (phone.dirty || phone.touched)">
+                                <span class="prefix">🇹🇳 +216</span>
+                                <input type="tel" name="phoneNumber" [(ngModel)]="deliveryDetails.phoneNumber" required
+                                    pattern="^[0-9]{8}$" maxlength="8" #phone="ngModel" placeholder="12345678"
+                                    class="form-input" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                            </div>
+                            <small class="error-text" *ngIf="phone.invalid && (phone.dirty || phone.touched)">
+                                <span *ngIf="phone.errors?.['required']">Le numéro de téléphone est requis.</span>
+                                <span *ngIf="phone.errors?.['pattern']">Doit contenir exactement 8 chiffres.</span>
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Région <span class="text-danger">*</span></label>
+                            <div class="select-wrapper"
+                                [class.error]="region.invalid && (region.dirty || region.touched)">
+                                <select name="region" [(ngModel)]="deliveryDetails.region" required #region="ngModel"
+                                    class="form-input">
+                                    <option value="" disabled selected>Sélectionnez une région</option>
+                                    <option *ngFor="let r of tunisianRegions" [value]="r">{{ r }}</option>
+                                </select>
+                                <i class="fas fa-chevron-down arrow-icon"></i>
+                            </div>
+                            <small class="error-text" *ngIf="region.invalid && (region.dirty || region.touched)">
+                                La région est requise.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Code Postal <span class="text-danger">*</span></label>
+                            <input type="tel" name="postalCode" [(ngModel)]="deliveryDetails.postalCode" required
+                                pattern="^[0-9]{4}$" maxlength="4" #postal="ngModel" placeholder="ex. 1000"
+                                class="form-input" [class.error]="postal.invalid && (postal.dirty || postal.touched)"
+                                onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                            <small class="error-text" *ngIf="postal.invalid && (postal.dirty || postal.touched)">
+                                <span *ngIf="postal.errors?.['required']">Le code postal est requis.</span>
+                                <span *ngIf="postal.errors?.['pattern']">Doit contenir exactement 4 chiffres.</span>
+                            </small>
+                        </div>
+
+                        <div class="form-group span-full">
+                            <label>Adresse <span class="text-danger">*</span></label>
+                            <textarea name="address" [(ngModel)]="deliveryDetails.address" required #address="ngModel"
+                                placeholder="ex. 123 Nom de Rue" class="form-input" rows="3"
+                                [class.error]="address.invalid && (address.dirty || address.touched)"></textarea>
+                            <small class="error-text" *ngIf="address.invalid && (address.dirty || address.touched)">
+                                L'adresse est requise.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" (click)="cancelCheckout()">Annuler</button>
+                        <button type="submit" class="btn-primary confirm-btn" [disabled]="checkoutForm.invalid">
+                            <span>Confirmer la commande</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+<div class="container fade-in">
+    <h2>Gestion des Commandes</h2>
+
+    <div *ngIf="loading" class="text-center">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <div class="search-section">
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher (Code, Client, Statut...)" [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearchInput($event)" (keyup.enter)="onSearch()">
+
+            <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn" title="Effacer">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <button (click)="onSearch()" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code Commande</th>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Articles</th>
+                    <th>Total</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of filteredOrders | slice:0:visibleLimit">
+                    <td>
+                        <strong>{{ order.trackingCode || 'En attente...' }}</strong>
+                    </td>
+                    <td>{{ order.orderDate | date:'short' }}</td>
+                    <td>
+                        {{ order.user ? (order.user.firstName + ' ' + order.user.lastName) : 'Inconnu' }}<br>
+                        <small>{{ order.user?.email }}</small>
+                        <div *ngIf="order.phoneNumber" class="small text-muted mt-1">
+                            <i class="fas fa-phone"></i> {{ order.phoneNumber }}<br>
+                            <i class="fas fa-map-marker-alt"></i> {{ order.region }}
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngFor="let line of order.orderLines" class="d-flex align-items-center order-line-item">
+                            <img [src]="(line.variant?.product?.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                                alt="Product" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">
+                            {{ line.quantity }}x {{ line.variant?.product?.name }}
+                        </div>
+                    </td>
+                    <td>{{ order.totalAmount | currency:'TND' }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="order.status.toLowerCase()">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <ng-container *ngIf="order.status === 'PENDING'">
+                                <button class="btn-success" (click)="updateStatus(order, 'ACCEPTED')" title="Accepter">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-danger" (click)="updateStatus(order, 'CANCELLED')" title="Rejeter">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </ng-container>
+                            <button class="btn-icon pdf" (click)="downloadPdf(order)" title="Télécharger Facture">
+                                <i class="fas fa-file-pdf"></i>
+                            </button>
+                            <button class="btn-icon delete" (click)="deleteOrder(order.id)" title="Supprimer Commande">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- View More / Show Less Buttons -->
+    <div class="view-more-container" *ngIf="filteredOrders.length > 4"
+        style="text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
+        <button *ngIf="visibleLimit < filteredOrders.length" (click)="showAllOrders()" class="btn-primary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px;">
+            Voir plus de commandes <i class="fas fa-arrow-down" style="margin-left: 0.5rem;"></i>
+        </button>
+
+        <button *ngIf="visibleLimit >= filteredOrders.length" (click)="showLessOrders()" class="btn-secondary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px; background-color: #f8f9fa; color: #333; border: 1px solid #ddd;">
+            Voir moins <i class="fas fa-arrow-up" style="margin-left: 0.5rem;"></i>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+services:
+  # Backend Spring Boot Service
+  - type: web
+    name: farah-couture-backend
+    env: docker
+    dockerfilePath: ./BackEnd/Dockerfile
+    dockerContext: ./BackEnd
+    envVars:
+      - key: PORT
+        value: 8080
+      # PostgreSQL connection
+      # IMPORTANT: Link database "farah-db" in Render dashboard
+      # Then set SPRING_DATASOURCE_URL manually in format: jdbc:postgresql://HOST:5432/DBNAME
+      # Or these will be auto-set from linked database:
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: farah-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: farah-db
+          property: password
+      - key: SPRING_MAIL_HOST
+        value: smtp.gmail.com
+      - key: SPRING_MAIL_PORT
+        value: 587
+      - key: SPRING_MAIL_USERNAME
+        sync: false  # Set this in Render dashboard
+      - key: SPRING_MAIL_PASSWORD
+        sync: false  # Set this in Render dashboard
+
+  # Frontend Angular Service (Static Site)
+  - type: web
+    name: farah-couture-frontend
+    env: static
+    buildCommand: cd FrontEnd && npm install && npm run build -- --configuration production
+    staticPublishPath: ./FrontEnd/dist/FrontEnd/browser
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-XSS-Protection
+        value: 1; mode=block
+
+databases:
+  - name: farah-db
+    databaseName: farahcouture
+    user: farahcouture_user
+    plan: free

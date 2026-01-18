@@ -1,0 +1,107 @@
+<div class="page-container container">
+    <div class="header-section" style="text-align: center; margin-bottom: 4rem; padding-top: 4rem;">
+        <h1>La Collection</h1>
+        <p style="color: grey; margin-top: 1rem;">Explorez nos dernières nouveautés</p>
+    </div>
+
+    <div class="search-section">
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher dans la collection ..." [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearchInput($event)" (keyup.enter)="onSearch()">
+
+            <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn" title="Effacer">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <button (click)="onSearch()" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Recherche en cours...</p>
+    </div>
+
+    <!-- No Results State -->
+    <div *ngIf="!isLoading && products.length === 0 && hasSearched" class="no-results">
+        <i class="fas fa-search"></i>
+        <h3>Aucun produit trouvé</h3>
+        <p>Nous n'avons trouvé aucune correspondance pour "{{ searchQuery }}"</p>
+        <button (click)="clearSearch()" class="btn-secondary">Voir tous les produits</button>
+    </div>
+
+    <div class="category-filters">
+        <button [class.active]="selectedCategoryId === null" (click)="filterCategory(null)">Tout</button>
+        <button *ngFor="let cat of categories" [class.active]="selectedCategoryId === cat.id"
+            (click)="filterCategory(cat.id)">
+            {{ cat.name }}
+        </button>
+        <a *ngIf="authService.isAdmin()" routerLink="/products/add" class="add-btn btn btn-success btn-add"
+            style="margin-left: auto; color: white; padding: 0; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+            title="Ajouter Article">
+            <i class="fas fa-plus icon-animated" style="margin: 0; font-size: 1.5rem;"></i>
+        </a>
+    </div>
+
+    <div class="product-grid">
+        <div *ngFor="let product of products | slice:0:visibleLimit" class="product-card">
+            <div class="image-wrapper">
+                <img [src]="(product.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                    [alt]="product.name">
+                <div class="overlay">
+                    <!-- Admin Controls (Top Right) -->
+                    <div class="admin-controls" *ngIf="authService.isAdmin()">
+                        <a [routerLink]="['/products/edit', product.id]" class="btn btn-warning btn-sm btn-edit"
+                            style="color: white; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+                            title="Modifier Produit">
+                            <i class="fas fa-edit icon-animated" style="margin: 0; font-size: 1.1rem;"></i>
+                        </a>
+                        <button (click)="deleteProduct(product.id); $event.stopPropagation()"
+                            class="btn btn-danger btn-sm btn-delete"
+                            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+                            title="Supprimer Produit">
+                            <i class="fas fa-trash-alt icon-animated" style="margin: 0; font-size: 1.1rem;"></i>
+                        </button>
+                    </div>
+
+                    <!-- User Controls (Center) -->
+                    <div class="user-controls">
+                        <button class="btn-favorite"
+                            (click)="favoriteService.addFavorite(product); $event.stopPropagation()"
+                            title="Ajouter aux Favoris">
+                            <i class="fas fa-heart"></i>
+                        </button>
+
+                        <a [routerLink]="['/products', product.id]" class="btn-quick-view">
+                            <i class="fas fa-eye"></i> Aperçu
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-details">
+                <h3>{{ product.name }}</h3>
+                <p class="description">{{ product.description }}</p>
+                <p class="price">{{ product.price | currency:'TND':'symbol':'1.2-2' }}</p>
+                <button class="btn-primary" style="margin-top: 0.5rem; padding: 0.5rem; font-size: 0.9rem;"
+                    (click)="addToCart(product); $event.stopPropagation()">Ajouter au Panier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View More / Show Less Buttons -->
+    <div class="view-more-container" *ngIf="products.length > 6"
+        style="text-align: center; margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+        <button *ngIf="visibleLimit < products.length" (click)="showAllProducts()" class="btn-primary"
+            style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px;">
+            Voir plus de produits <i class="fas fa-arrow-down" style="margin-left: 0.5rem;"></i>
+        </button>
+
+        <button *ngIf="visibleLimit >= products.length" (click)="showLessProducts()" class="btn-secondary"
+            style="padding: 1rem 2rem; font-size: 1.1rem; border-radius: 50px; background-color: #f8f9fa; color: #333; border: 1px solid #ddd;">
+            Voir moins <i class="fas fa-arrow-up" style="margin-left: 0.5rem;"></i>
+        </button>
+    </div>
+</div>

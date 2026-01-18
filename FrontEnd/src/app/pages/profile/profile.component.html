@@ -1,0 +1,72 @@
+<div class="page-container">
+    <div class="profile-card fade-in">
+        <div class="card-header">
+            <div class="avatar-placeholder">
+                <i class="fas fa-user"></i>
+            </div>
+            <h2>Mon Profil</h2>
+            <p>Gérez les détails de votre compte et vos préférences</p>
+        </div>
+
+        <div *ngIf="message" [class]="'alert alert-' + messageType + ' fade-in'">
+            <i class="fas" [ngClass]="messageType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
+            {{ message }}
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+            <div class="form-section">
+                <h3>Informations personnelles</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prénom</label>
+                        <input type="text" formControlName="firstName" class="form-control" placeholder="Jane">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" formControlName="lastName" class="form-control" placeholder="Doe">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Adresse Email</label>
+                    <input type="email" formControlName="email" class="form-control" placeholder="jane@example.com">
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="form-section">
+                <h3>Sécurité</h3>
+                <div class="form-group full-width">
+                    <label>Ancien mot de passe <small>(Requis pour changer le mot de passe)</small></label>
+                    <div class="password-wrapper">
+                        <input [type]="showOldPassword ? 'text' : 'password'" formControlName="oldPassword"
+                            class="form-control" placeholder="••••••••">
+                        <button type="button" class="btn-toggle-password" (click)="toggleOldPassword()">
+                            <i class="fas" [class.fa-eye]="!showOldPassword" [class.fa-eye-slash]="showOldPassword"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Nouveau mot de passe <small>(Laisser vide pour conserver le mot de passe
+                            actuel)</small></label>
+                    <div class="password-wrapper">
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                            class="form-control" placeholder="••••••••">
+                        <button type="button" class="btn-toggle-password" (click)="togglePassword()">
+                            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-save"
+                    [disabled]="profileForm.invalid || profileForm.pristine">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,144 @@
+/* Animation Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroZoom {
+    0% {
+        transform: scale(1);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.hero {
+    min-height: 90vh;
+    position: relative;
+    background-color: #E6E0D4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+
+    .hero-background {
+        position: absolute;
+        inset: 0;
+        background-image: url('../../../assets/placeholder.png');
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+        animation: heroZoom 10s ease-out forwards;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        padding: 2rem;
+        animation: fadeInUp 1s ease-out 0.5s backwards;
+        /* Delayed slightly to let bg load */
+
+        h1 {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            /* Changed to white for better contrast with image */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-family: 'Playfair Display', serif;
+
+            @media (max-width: 768px) {
+                font-size: 3rem;
+            }
+        }
+
+        p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            color: #f0f0f0;
+            font-weight: 300;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        }
+    }
+}
+
+.featured {
+    padding: 8rem 0;
+    background-color: #f9f9f9;
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        p {
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+    }
+
+    .product-grid {
+        display: flex;
+        overflow-x: auto;
+        gap: 40px;
+        /* Matched to TS logic */
+        padding: 2rem 1rem;
+        scroll-behavior: smooth;
+        scroll-snap-type: none;
+        /* Disabled snap for smooth auto-scroll control */
+        -webkit-overflow-scrolling: touch;
+
+        /* Hide Scrollbar for Chrome/Safari/Opera */
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide Scrollbar for IE, Edge and Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        .product-card {
+            flex: 0 0 auto;
+            width: 320px;
+
+            /* Apply Animation */
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+
+            /* Staggered Animation Delays */
+            @for $i from 1 through 50 {
+                &:nth-child(#{$i}) {
+                    animation-delay: #{$i * 0.15}s;
+                }
+            }
+        }
+    }
+}

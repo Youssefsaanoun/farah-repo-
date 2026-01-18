@@ -1,0 +1,35 @@
+<div class="page-container">
+    <div class="header-section" style="text-align: center; margin-bottom: 4rem; padding-top: 4rem;">
+        <h1>Your Favorites</h1>
+        <p style="color: grey; margin-top: 1rem;">Items you love</p>
+    </div>
+
+    <div class="product-grid" *ngIf="(favoriteItems$ | async) as items">
+        <div *ngIf="items.length === 0" style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+            <p>You haven't added any favorites yet.</p>
+            <a routerLink="/products" class="btn-primary" style="margin-top: 1rem;">Browse Collection</a>
+        </div>
+
+        <div *ngFor="let product of items" class="product-card">
+            <div class="image-wrapper">
+                <img [src]="(product.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                    [alt]="product.name">
+                <div class="overlay">
+                    <div class="user-controls">
+                        <button (click)="removeFavorite(product.id); $event.stopPropagation()" class="btn-favorite"
+                            title="Remove from Favorites" style="color: #ff4757;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <a [routerLink]="['/products', product.id]" class="btn-quick-view">
+                            <i class="fas fa-eye"></i> Quick View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-details">
+                <h3>{{ product.name }}</h3>
+                <p class="price">{{ product.price | currency:'TND':'symbol':'1.2-2' }}</p>
+            </div>
+        </div>
+    </div>
+</div>

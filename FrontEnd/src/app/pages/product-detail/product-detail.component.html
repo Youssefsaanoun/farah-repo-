@@ -1,0 +1,33 @@
+<div class="product-detail-container" *ngIf="product">
+    <div class="gallery">
+        <div class="main-image">
+            <img [src]="(product.images?.[selectedImageIndex]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                [alt]="product.name">
+        </div>
+        <div class="thumbnails" *ngIf="product.images && product.images.length > 1">
+            <img *ngFor="let img of product.images; let i = index"
+                [src]="(img.imageUrl | imageUrl) || 'assets/placeholder.jpg'" (click)="selectImage(i)"
+                [class.active]="i === selectedImageIndex">
+        </div>
+    </div>
+
+    <div class="info">
+        <h1>{{ product.name }}</h1>
+        <p class="price">{{ product.price | currency:'TND':'symbol':'1.2-2' }}</p>
+
+        <div class="description-section">
+            <h3>Description</h3>
+            <p class="description">{{ product.description }}</p>
+        </div>
+
+        <div class="actions">
+            <!-- Simplified Quantity for now, just static 1 or implementation later -->
+            <button (click)="addToCart()" class="btn-primary">Ajouter au Panier</button>
+        </div>
+
+        <div class="trust-signals">
+            <p>✓ Livraison et retours gratuits</p>
+            <p>✓ Fabrication artisanale durable</p>
+        </div>
+    </div>
+</div>

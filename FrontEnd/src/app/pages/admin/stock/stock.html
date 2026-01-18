@@ -1,0 +1,88 @@
+<div class="container fade-in">
+    <h2>Gestion de Stock</h2>
+
+    <div *ngIf="loading" class="text-center">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-bar">
+            <!-- Search Icon at Start -->
+            <i class="fas fa-search search-icon"></i>
+
+            <input type="text" placeholder="Rechercher produits, catégorie, statut..." [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearchInput($event)">
+
+            <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn" title="Effacer la recherche">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive" *ngIf="!loading">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nom du Produit</th>
+                    <th>Catégorie</th>
+                    <th>Quantité Totale</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of products | slice:0:visibleLimit">
+                    <td>
+                        <img [src]="(product.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                            alt="Produit" class="product-thumb">
+                    </td>
+                    <td>
+                        <strong>{{ product.name }}</strong>
+                    </td>
+                    <td>{{ product.category?.name || 'N/A' }}</td>
+                    <td>
+                        <div class="quantity-controls">
+                            <!-- Decrease -->
+                            <button class="qty-btn"
+                                (click)="updateStock(product, product.variants[0].stockQuantity - 1)"
+                                [disabled]="product.variants[0].stockQuantity <= 0">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+                            <!-- Input -->
+                            <input type="number" class="qty-input" [ngModel]="product.variants[0].stockQuantity"
+                                readonly>
+
+                            <!-- Increase -->
+                            <button class="qty-btn"
+                                (click)="updateStock(product, product.variants[0].stockQuantity + 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge" [class.in-stock]="getStock(product) > 0"
+                            [class.out-of-stock]="getStock(product) === 0">
+                            {{ getStock(product) > 0 ? 'En Stock' : 'Rupture de Stock' }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- View More / Show Less Buttons -->
+    <div class="view-more-container" *ngIf="products.length > 7"
+        style="text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
+        <button *ngIf="visibleLimit < products.length" (click)="showAllProducts()" class="btn-primary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px;">
+            Voir plus de produits <i class="fas fa-arrow-down" style="margin-left: 0.5rem;"></i>
+        </button>
+
+        <button *ngIf="visibleLimit >= products.length" (click)="showLessProducts()" class="btn-secondary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px; background-color: #f8f9fa; color: #333; border: 1px solid #ddd;">
+            Voir moins <i class="fas fa-arrow-up" style="margin-left: 0.5rem;"></i>
+        </button>
+    </div>
+</div>

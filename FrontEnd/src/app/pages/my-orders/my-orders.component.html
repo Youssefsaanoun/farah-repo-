@@ -1,0 +1,75 @@
+<div class="container fade-in">
+    <h2>Mes Commandes</h2>
+    <div *ngIf="loading" class="text-center">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <div class="search-section">
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher des commandes (Code, Statut...)" [(ngModel)]="searchQuery"
+                (ngModelChange)="onSearchInput($event)" (keyup.enter)="onSearch()">
+
+            <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn" title="Effacer la recherche">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <button (click)="onSearch()" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length === 0" class="empty-state">
+        <p *ngIf="!searchQuery">Vous n'avez pas encore passé de commande.</p>
+        <p *ngIf="searchQuery">Aucune commande trouvée correspondant à "{{searchQuery}}".</p>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length > 0" class="orders-list">
+        <div *ngFor="let order of filteredOrders | slice:0:visibleLimit" class="order-card">
+            <div class="order-header">
+                <div>
+                    <span class="order-id">{{ order.trackingCode || 'En attente...' }}</span>
+                    <div class="text-muted small">Commandé le {{ order.orderDate | date:'medium' }}</div>
+                </div>
+                <span class="order-status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+            <div class="order-body">
+                <div *ngFor="let line of order.orderLines" class="order-line">
+                    <div class="d-flex align-items-center mb-2">
+                        <img [src]="(line.variant?.product?.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.jpg'"
+                            style="width:50px; height:50px; object-fit:cover; margin-right:10px;">
+                        <span>{{ line.variant?.product?.name }} ({{ line.variant?.size }} / {{ line.variant?.color
+                            }})</span>
+                    </div>
+                    <span>x{{ line.quantity }}</span>
+                    <span>{{ line.price | currency:'TND' }}</span>
+                </div>
+            </div>
+            <div class="order-footer">
+                <strong>Total: {{ order.totalAmount | currency:'TND' }}</strong>
+                <div *ngIf="order.address" class="delivery-details mt-2">
+                    <hr>
+                    <small>
+                        <strong>Livraison:</strong><br>
+                        {{ order.address }}, {{ order.region }} {{ order.postalCode }}<br>
+                        Tél: {{ order.phoneNumber }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View More / Show Less Buttons -->
+    <div class="view-more-container" *ngIf="filteredOrders.length > 2"
+        style="text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; padding-bottom: 2rem;">
+        <button *ngIf="visibleLimit < filteredOrders.length" (click)="showAllOrders()" class="btn-primary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px;">
+            Voir plus de commandes <i class="fas fa-arrow-down" style="margin-left: 0.5rem;"></i>
+        </button>
+
+        <button *ngIf="visibleLimit >= filteredOrders.length" (click)="showLessOrders()" class="btn-secondary"
+            style="padding: 0.8rem 1.5rem; font-size: 1rem; border-radius: 50px; background-color: #f8f9fa; color: #333; border: 1px solid #ddd;">
+            Voir moins <i class="fas fa-arrow-up" style="margin-left: 0.5rem;"></i>
+        </button>
+    </div>
+</div>

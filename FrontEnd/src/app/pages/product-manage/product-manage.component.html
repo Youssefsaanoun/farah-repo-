@@ -1,0 +1,70 @@
+<div class="page-container">
+    <div class="form-card fade-in">
+        <div class="form-header">
+            <h2>{{ isEditMode ? 'Modifier le produit' : 'Ajouter un nouveau produit' }}</h2>
+            <p>Entrez les détails de votre article</p>
+        </div>
+
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+            <!-- Product Name -->
+            <div class="form-group full-width">
+                <label>Nom du produit</label>
+                <input type="text" formControlName="name" class="form-control" placeholder="ex. Robe de soirée en soie">
+            </div>
+
+            <!-- Description -->
+            <div class="form-group full-width">
+                <label>Description</label>
+                <textarea formControlName="description" class="form-control" rows="4"
+                    placeholder="Décrivez le tissu, la coupe et le style..."></textarea>
+            </div>
+
+            <!-- Three Column Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Prix (TND)</label>
+                    <div class="input-wrapper">
+                        <input type="number" formControlName="price" class="form-control" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantité en stock</label>
+                    <input type="number" formControlName="quantity" class="form-control" placeholder="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select formControlName="categoryId" class="form-control">
+                        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Image Upload Section -->
+            <div class="form-group full-width upload-section">
+                <label>Image du produit</label>
+                <div class="file-drop-area">
+                    <span class="file-msg" *ngIf="!imageUrl">Glissez-déposez ou cliquez pour télécharger</span>
+                    <input type="file" (change)="onFileSelected($event)" class="file-input" accept="image/*">
+
+                    <div *ngIf="imageUrl" class="image-preview">
+                        <img [src]="imageUrl | imageUrl" alt="Aperçu">
+                        <button type="button" class="btn-remove-image" (click)="imageUrl = null">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-submit" [disabled]="productForm.invalid">
+                    <i class="fas" [class.fa-plus]="!isEditMode" [class.fa-save]="isEditMode"
+                        [class.icon-animated]="true"></i>
+                    <span>{{ isEditMode ? 'Mettre à jour le produit' : 'Créer le produit' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

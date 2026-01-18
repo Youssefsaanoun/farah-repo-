@@ -1,0 +1,36 @@
+<div class="hero">
+    <div class="hero-background"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Élégance Intemporelle</h1>
+        <p>Découvrez notre collection exclusive de couture artisanale conçue pour la femme moderne.</p>
+        <a routerLink="/products" class="btn-primary">Voir la Collection</a>
+    </div>
+</div>
+
+<section class="featured">
+    <div class="container">
+        <div class="section-header">
+            <h2>Pièces en Vedette</h2>
+            <p>Des sélections soignées juste pour vous</p>
+        </div>
+
+        <div class="product-grid" #productGrid (mouseenter)="pauseAutoScroll()" (mouseleave)="resumeAutoScroll()">
+            <div *ngFor="let product of featuredProducts" class="product-card">
+                <div class="image-wrapper">
+                    <img [src]="(product.images?.[0]?.imageUrl | imageUrl) || 'assets/placeholder.png'"
+                        [alt]="product.name">
+                    <div class="overlay">
+                        <a [routerLink]="['/products', product.id]" class="btn-quick-view">
+                            <i class="fas fa-eye"></i> Aperçu
+                        </a>
+                    </div>
+                </div>
+                <div class="card-details">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">{{ product.price | currency:'TND':'symbol':'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

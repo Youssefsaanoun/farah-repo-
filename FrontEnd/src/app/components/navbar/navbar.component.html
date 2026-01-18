@@ -1,0 +1,93 @@
+<nav class="navbar">
+  <div class="container">
+    <a routerLink="/" class="logo">
+      <img src="assets/logo.png" alt="Farah Couture Logo">
+      <span class="brand-name">FARAH COUTURE</span>
+    </a>
+
+    <button class="mobile-toggle" (click)="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <div class="nav-links" [class.active]="isMenuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Accueil</a>
+      <a routerLink="/products" routerLinkActive="active">Collection</a>
+      <a *ngIf="currentUser?.role === 'ADMIN'" routerLink="/admin/orders" routerLinkActive="active"
+        class="action-link relative">
+        <i class="fas fa-clipboard-list" style="margin-right: 5px;"></i>Gestion Commandes
+        <span class="badge" *ngIf="pendingOrdersCount > 0">{{ pendingOrdersCount }}</span>
+      </a>
+      <a *ngIf="currentUser?.role === 'ADMIN'" routerLink="/admin/stock" routerLinkActive="active" class="action-link"
+        style="margin-left: 1rem;">
+        <i class="fas fa-boxes" style="margin-right: 5px;"></i>Gestion de stock
+      </a>
+
+      <a *ngIf="currentUser?.role === 'ADMIN'" routerLink="/profile" routerLinkActive="active" class="action-link"
+        style="margin-left: 1rem;">
+        <i class="fas fa-id-card" style="margin-right: 5px;"></i>Mon Profil
+      </a>
+
+
+      <div class="right-group">
+        <!-- Favorite Action -->
+        <a routerLink="/favorites" class="action-link" title="Favoris">
+          <span class="icon">♥</span>
+          <span class="label">Favoris</span>
+          <span class="badge" *ngIf="favoriteItemCount > 0">{{ favoriteItemCount }}</span>
+        </a>
+
+        <!-- Cart Action -->
+        <a routerLink="/cart" class="action-link" title="Panier" *ngIf="currentUser?.role !== 'ADMIN'">
+          <span class="icon">🛒</span>
+          <span class="label">Panier</span>
+          <span class="badge" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+        </a>
+
+        <!-- Auth Action -->
+        <div class="auth-section">
+          <ng-container *ngIf="currentUser; else loginBtn">
+            <div class="user-dropdown-container">
+              <button class="user-icon-btn" (click)="toggleUserMenu()">
+                <i class="fas fa-user-circle"></i>
+                <span class="user-name">{{ currentUser.firstName }}</span>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div class="dropdown-menu" [class.show]="isUserMenuOpen">
+                <div class="dropdown-header">
+                  <span class="greeting">Connecté en tant que</span>
+                  <span class="email">{{ currentUser.email }}</span>
+                </div>
+                <div class="divider"></div>
+                <a routerLink="/profile" class="dropdown-item" (click)="closeUserMenu()">
+                  <i class="fas fa-id-card"></i> Mon Profil
+                </a>
+                <a *ngIf="currentUser?.role === 'ADMIN'" routerLink="/admin/users" class="dropdown-item"
+                  (click)="closeUserMenu()">
+                  <i class="fas fa-users"></i> Administration
+                </a>
+                <a routerLink="/my-orders" class="dropdown-item" (click)="closeUserMenu()"
+                  *ngIf="currentUser?.role !== 'ADMIN'">
+                  <i class="fas fa-box-open"></i> Mes Commandes
+                </a>
+                <a routerLink="/favorites" class="dropdown-item" (click)="closeUserMenu()">
+                  <i class="fas fa-heart"></i> Favoris
+                </a>
+                <div class="divider"></div>
+                <button (click)="logout()" class="dropdown-item danger">
+                  <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #loginBtn>
+            <a routerLink="/login" class="btn-text">Se connecter</a>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

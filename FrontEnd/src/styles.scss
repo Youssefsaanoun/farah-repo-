@@ -1,0 +1,361 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+    --color-bg: #F9F7F2;
+    /* Lighter, cleaner Beige */
+    --color-text: #1C1C1C;
+    /* Soft Black */
+    --color-text-light: #555555;
+    --color-accent: #D4AF37;
+    /* Gold */
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 8rem;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: 3.5rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.container {
+    max-width: 1400px;
+    /* Wider container for modern look */
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* Professional Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--color-text);
+    color: var(--color-white);
+    border-color: var(--color-text);
+
+    &:hover {
+        background-color: transparent;
+        color: var(--color-text);
+    }
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-text);
+    border-color: var(--color-text);
+
+    &:hover {
+        background-color: var(--color-text);
+        color: var(--color-white);
+    }
+}
+
+.btn-link {
+    padding: 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid currentColor;
+    height: auto;
+    width: auto;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.icon-animated {
+    margin-right: 0.5rem;
+    transition: all 0.3s ease;
+    font-size: 1.3rem;
+    /* Increased size */
+}
+
+/* Quick View Button Styling */
+.btn-quick-view {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+
+    &:hover {
+        background: #000;
+        color: #fff;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.icon-add:hover .icon-animated,
+.btn-add:hover .icon-animated {
+    animation: hover-bounce 0.5s ease infinite;
+}
+
+/* Form refinement */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    background-color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast);
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-text);
+        box-shadow: 0 0 0 2px rgba(28, 28, 28, 0.1);
+    }
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+}
+
+/* Global Product Card */
+.product-card {
+    position: relative;
+    background: transparent;
+    text-align: center;
+
+    .image-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3/4;
+        /* Consistent Portrait Ratio */
+        overflow: hidden;
+        background-color: #f0ebe0;
+        margin-bottom: 1.5rem;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            /* Slightly darker for better contrast */
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Improved Favorite Button */
+        .btn-favorite {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            color: #ccc;
+            /* Default grey */
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            &:hover {
+                color: #ff4757;
+                /* Vibrant Red */
+                transform: scale(1.1);
+                box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+            }
+
+            i {
+                transition: transform 0.3s;
+            }
+
+            &:active i {
+                transform: scale(0.8);
+            }
+        }
+
+        /* Quick View Button Tweaks for Context */
+        .btn-quick-view {
+            /* Existing styles are good, just ensuring alignment */
+            margin: 0;
+            /* Remove potential margins */
+        }
+    }
+
+    &:hover {
+        .image-wrapper img {
+            transform: scale(1.1);
+            /* Slightly more zoom */
+        }
+
+        .overlay {
+            opacity: 1;
+        }
+
+        .user-controls {
+            transform: translateY(0);
+        }
+    }
+
+    .card-details {
+        h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-serif);
+            font-weight: 400;
+            color: var(--color-text);
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .price {
+            font-family: var(--font-sans);
+            color: var(--color-text-light);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+    }
+}
