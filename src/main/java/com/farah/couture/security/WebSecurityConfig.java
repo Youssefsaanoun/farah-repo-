@@ -66,8 +66,10 @@ public class WebSecurityConfig {
                                 "/api/users/reset-password", "/api/products/**", "/api/categories/**", "/api/images/**",
                                 "/images/**")
                         .permitAll()
-                        // All other requests require authentication
-                        .anyRequest().authenticated());
+                        // Secure all other API endpoints
+                        .requestMatchers("/api/**").authenticated()
+                        // Permit all other requests (SPA routes forwarded to index.html)
+                        .anyRequest().permitAll());
 
         http.authenticationProvider(authenticationProvider());
 
