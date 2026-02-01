@@ -29,12 +29,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserController.class);
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+        logger.info("Received registration request for email: {}", user.getEmail());
         try {
             User registeredUser = userService.registerUser(user);
+            logger.info("User registered successfully: {}", user.getEmail());
             return ResponseEntity.ok(registeredUser);
         } catch (RuntimeException e) {
+            logger.error("Error registering user: {}", e.getMessage());
             return ResponseEntity.badRequest().body(java.util.Collections.singletonMap("message", e.getMessage()));
         }
     }
