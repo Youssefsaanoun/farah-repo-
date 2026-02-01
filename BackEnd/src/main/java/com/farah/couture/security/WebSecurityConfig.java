@@ -58,7 +58,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // SPA static resources (must be before API endpoints)
-                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", 
+                        .requestMatchers("/", "/index.html", "/error", "/static/**", "/assets/**",
                                 "/*.js", "/*.css", "/*.png", "/*.jpg", "/*.jpeg", "/*.svg", "/*.ico", "/*.woff", "/*.woff2", "/*.ttf")
                         .permitAll()
                         // API public endpoints

@@ -1,17 +1,13 @@
 services:
-  # Backend Spring Boot Service (Now serving Frontend too)
+  # Backend Spring Boot Service (serves Frontend from same JAR via Dockerfile)
   - type: web
     name: farah-couture-backend
     env: docker
     dockerfilePath: ./BackEnd/Dockerfile
-    dockerContext: . 
+    dockerContext: .
+    # Do NOT set PORT here - Render assigns it dynamically; app uses server.port=${PORT:8080}
     envVars:
-      - key: PORT
-        value: 8080
-      # PostgreSQL connection
-      # IMPORTANT: Link database "farah-db" in Render dashboard
-      # Then set SPRING_DATASOURCE_URL manually in format: jdbc:postgresql://HOST:5432/DBNAME
-      # Or these will be auto-set from linked database:
+      # Set SPRING_DATASOURCE_URL in Render dashboard: jdbc:postgresql://<host>:5432/<dbname> (from linked DB Info)
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: farah-db
