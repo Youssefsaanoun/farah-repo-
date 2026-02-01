@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Product, Category } from '../models/models';
 import { environment } from '../../environments/environment';
+import { STATIC_PRODUCTS, STATIC_CATEGORIES } from '../data/static-products';
 
 @Injectable({
     providedIn: 'root'
@@ -13,23 +15,38 @@ export class ProductService {
     constructor(private http: HttpClient) { }
 
     getAllProducts(): Observable<Product[]> {
-        return this.http.get<Product[]>(this.apiUrl);
+        return this.http.get<Product[]>(this.apiUrl).pipe(
+            catchError(() => of(STATIC_PRODUCTS))
+        );
     }
 
     getProductById(id: number): Observable<Product> {
-        return this.http.get<Product>(`${this.apiUrl}/${id}`);
+        return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
+            catchError(() => of(STATIC_PRODUCTS.find(p => p.id === id) ?? STATIC_PRODUCTS[0]))
+        );
     }
 
     getProductsByCategory(categoryId: number): Observable<Product[]> {
-        return this.http.get<Product[]>(`${this.apiUrl}/category/${categoryId}`);
+        return this.http.get<Product[]>(`${this.apiUrl}/category/${categoryId}`).pipe(
+            catchError(() => of(STATIC_PRODUCTS.filter(p => p.category.id === categoryId)))
+        );
     }
 
     searchProducts(keyword: string): Observable<Product[]> {
-        return this.http.get<Product[]>(`${this.apiUrl}/search?q=${keyword}`);
+        return this.http.get<Product[]>(`${this.apiUrl}/search?q=${keyword}`).pipe(
+            catchError(() => {
+                const q = (keyword || '').toLowerCase();
+                return of(q ? STATIC_PRODUCTS.filter(p =>
+                    p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
+                ) : STATIC_PRODUCTS);
+            })
+        );
     }
 
     getAllCategories(): Observable<Category[]> {
-        return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+        return this.http.get<Category[]>(`${this.apiUrl}/categories`).pipe(
+            catchError(() => of(STATIC_CATEGORIES))
+        );
     }
 
     createProduct(product: any): Observable<Product> {
