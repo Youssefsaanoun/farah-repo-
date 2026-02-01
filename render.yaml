@@ -1,10 +1,10 @@
 services:
-  # Backend Spring Boot Service
+  # Backend Spring Boot Service (Now serving Frontend too)
   - type: web
     name: farah-couture-backend
     env: docker
     dockerfilePath: ./BackEnd/Dockerfile
-    dockerContext: ./BackEnd
+    dockerContext: . 
     envVars:
       - key: PORT
         value: 8080
@@ -28,23 +28,6 @@ services:
         sync: false  # Set this in Render dashboard
       - key: SPRING_MAIL_PASSWORD
         sync: false  # Set this in Render dashboard
-
-  # Frontend Angular Service (Static Site)
-  - type: web
-    name: farah-couture-frontend
-    env: static
-    buildCommand: cd FrontEnd && npm install && npm run build -- --configuration production
-    staticPublishPath: ./FrontEnd/dist/FrontEnd/browser
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: DENY
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: X-XSS-Protection
-        value: 1; mode=block
 
 databases:
   - name: farah-db
