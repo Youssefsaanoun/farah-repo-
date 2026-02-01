@@ -1,0 +1,6 @@
+BackEnd/src/main/resources/static/
+BackEnd/target/
+FrontEnd/dist/
+FrontEnd/.angular/
+.DS_Store
+node_modules/
