@@ -14,19 +14,18 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String projectDir = System.getProperty("user.dir");
         // Handle path traversal to reach standard uploads directory structure
-        // If running from BackEnd/ subdir, go up one level
         java.nio.file.Path uploadPath = java.nio.file.Paths.get(projectDir);
         if (projectDir.endsWith("BackEnd")) {
             uploadPath = uploadPath.getParent();
         }
         uploadPath = uploadPath.resolve("uploads/images");
 
-        String uploadPathStr = "file:///" + uploadPath.toAbsolutePath().toString().replace("\\", "/") + "/";
+        String uploadPathStr = uploadPath.toUri().toString();
 
         registry.addResourceHandler("/images/**")
                 .addResourceLocations(uploadPathStr);
-
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
+        
+        // Removed manual "/**" handler to allow Spring Boot auto-configuration 
+        // to handle static resources (classpath:/static/) correctly.
     }
 }
